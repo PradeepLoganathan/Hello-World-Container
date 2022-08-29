@@ -7,7 +7,6 @@ app.MapGet("/", async context =>
     await context.Response.WriteAsync($"Hello {target}!\n");
 });
 
-app.MapGet("/hello", () => "hello sir");
 string port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 string url = String.Concat("http://0.0.0.0:", port);
 
