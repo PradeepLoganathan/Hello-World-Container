@@ -1,16 +1,14 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine AS build
 WORKDIR /app
 
 # Copy everything
 COPY . ./
-# Restore as distinct layers
-RUN dotnet restore
+
 # Build and publish a release
-RUN dotnet publish -c Release -o out
+RUN dotnet publish "helloworldcontainer.csproj" -c Release -o /app/publish
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine AS runtime
 WORKDIR /app
-COPY --from=build-env /app/out .
-ENV Target 
-ENTRYPOINT ["dotnet", "hello-world-container.dll"]
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "helloworldcontainer.dll"]
